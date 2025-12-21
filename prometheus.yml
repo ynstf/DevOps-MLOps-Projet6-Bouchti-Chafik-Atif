@@ -1,0 +1,7 @@
+global:
+  scrape_interval: 5s # Scrape toutes les 5 secondes (très réactif)
+
+scrape_configs:
+  - job_name: 'fraud_api_service'
+    static_configs:
+      - targets: ['fraud-api:8000'] # Nom du service Docker ci-dessous

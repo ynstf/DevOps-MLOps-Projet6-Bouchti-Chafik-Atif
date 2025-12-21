@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  fraud-api:
+    # Construit l'image à partir du Dockerfile dans le dossier courant (.)
+    build: .
+    container_name: fraud-detection-api
+    # Redémarre automatiquement si ça plante
+    restart: always
+    # Map le port 8000 du conteneur vers le port 8000 de ton PC
+    ports:
+      - "8000:8000"
+    # Variables d'environnement (optionnel, mais bonne pratique)
+    environment:
+      - APP_ENV=production
+      # Prometheus (Stockage des données)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: fraud-prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    depends_on:
+      - fraud-api
+
+  # Grafana (Visualisation)
+  grafana:
+    image: grafana/grafana:latest
+    container_name: fraud-grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin # Mot de passe par défaut
