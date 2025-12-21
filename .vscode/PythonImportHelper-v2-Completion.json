@@ -1,0 +1,336 @@
+[
+    {
+        "label": "uvicorn",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "uvicorn",
+        "description": "uvicorn",
+        "detail": "uvicorn",
+        "documentation": {}
+    },
+    {
+        "label": "pandas",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "pandas",
+        "description": "pandas",
+        "detail": "pandas",
+        "documentation": {}
+    },
+    {
+        "label": "joblib",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "joblib",
+        "description": "joblib",
+        "detail": "joblib",
+        "documentation": {}
+    },
+    {
+        "label": "numpy",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "numpy",
+        "description": "numpy",
+        "detail": "numpy",
+        "documentation": {}
+    },
+    {
+        "label": "FastAPI",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "HTTPException",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "BaseModel",
+        "importPath": "pydantic",
+        "description": "pydantic",
+        "isExtraImport": true,
+        "detail": "pydantic",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "Instrumentator",
+        "importPath": "prometheus_fastapi_instrumentator",
+        "description": "prometheus_fastapi_instrumentator",
+        "isExtraImport": true,
+        "detail": "prometheus_fastapi_instrumentator",
+        "documentation": {}
+    },
+    {
+        "label": "Counter",
+        "importPath": "prometheus_client",
+        "description": "prometheus_client",
+        "isExtraImport": true,
+        "detail": "prometheus_client",
+        "documentation": {}
+    },
+    {
+        "label": "Histogram",
+        "importPath": "prometheus_client",
+        "description": "prometheus_client",
+        "isExtraImport": true,
+        "detail": "prometheus_client",
+        "documentation": {}
+    },
+    {
+        "label": "RobustScaler",
+        "importPath": "sklearn.preprocessing",
+        "description": "sklearn.preprocessing",
+        "isExtraImport": true,
+        "detail": "sklearn.preprocessing",
+        "documentation": {}
+    },
+    {
+        "label": "requests",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "requests",
+        "description": "requests",
+        "detail": "requests",
+        "documentation": {}
+    },
+    {
+        "label": "time",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "time",
+        "description": "time",
+        "detail": "time",
+        "documentation": {}
+    },
+    {
+        "label": "random",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "random",
+        "description": "random",
+        "detail": "random",
+        "documentation": {}
+    },
+    {
+        "label": "Transaction",
+        "kind": 6,
+        "importPath": "app.main",
+        "description": "app.main",
+        "peekOfCode": "class Transaction(BaseModel):\n    Time: float\n    Amount: float\n    V1: float\n    V2: float\n    V3: float\n    V4: float\n    V5: float\n    V6: float\n    V7: float",
+        "detail": "app.main",
+        "documentation": {}
+    },
+    {
+        "label": "preprocess_transaction",
+        "kind": 2,
+        "importPath": "app.main",
+        "description": "app.main",
+        "peekOfCode": "def preprocess_transaction(transaction_dict: dict) -> pd.DataFrame:\n    \"\"\"\n    Applique le même preprocessing que dans le notebook:\n    1. Scale Amount et Time avec RobustScaler\n    2. Renomme en scaled_amount et scaled_time\n    3. Drop les colonnes originales\n    4. Réorganise les colonnes (scaled en premier)\n    \"\"\"\n    # Créer le DataFrame\n    df = pd.DataFrame([transaction_dict])",
+        "detail": "app.main",
+        "documentation": {}
+    },
+    {
+        "label": "health_check",
+        "kind": 2,
+        "importPath": "app.main",
+        "description": "app.main",
+        "peekOfCode": "def health_check():\n    return {\n        \"status\": \"ok\",\n        \"model\": \"UnderSampling LogisticRegression\",\n        \"monitoring\": \"enabled\"\n    }\n@app.post(\"/predict\")\ndef predict(transaction: Transaction):\n    if not model:\n        raise HTTPException(status_code=503, detail=\"Modèle non chargé\")",
+        "detail": "app.main",
+        "documentation": {}
+    },
+    {
+        "label": "predict",
+        "kind": 2,
+        "importPath": "app.main",
+        "description": "app.main",
+        "peekOfCode": "def predict(transaction: Transaction):\n    if not model:\n        raise HTTPException(status_code=503, detail=\"Modèle non chargé\")\n    try:\n        # Preprocessing identique au notebook\n        input_df = preprocess_transaction(transaction.model_dump())\n        # Prédiction\n        prediction = model.predict(input_df)[0]\n        proba = model.predict_proba(input_df)[0][1]\n        is_fraud = bool(prediction)",
+        "detail": "app.main",
+        "documentation": {}
+    },
+    {
+        "label": "model_info",
+        "kind": 2,
+        "importPath": "app.main",
+        "description": "app.main",
+        "peekOfCode": "def model_info():\n    \"\"\"Endpoint pour vérifier les informations du modèle\"\"\"\n    if not model:\n        raise HTTPException(status_code=503, detail=\"Modèle non chargé\")\n    return {\n        \"model_type\": str(type(model).__name__),\n        \"features_expected\": 30,  # scaled_amount, scaled_time + V1-V28\n        \"preprocessing\": \"RobustScaler on Amount & Time\"\n    }\nif __name__ == \"__main__\":",
+        "detail": "app.main",
+        "documentation": {}
+    },
+    {
+        "label": "FRAUD_COUNTER",
+        "kind": 5,
+        "importPath": "app.main",
+        "description": "app.main",
+        "peekOfCode": "FRAUD_COUNTER = Counter(\n    \"fraud_detection_total\",\n    \"Nombre total de fraudes détectées par le modèle\"\n)\nAMOUNT_HISTOGRAM = Histogram(\n    \"transaction_amount_distribution\",\n    \"Distribution des montants des transactions (Drift Detection)\",\n    buckets=[10, 50, 100, 500, 1000, 5000, 10000]\n)\nPROBABILITY_HISTOGRAM = Histogram(",
+        "detail": "app.main",
+        "documentation": {}
+    },
+    {
+        "label": "AMOUNT_HISTOGRAM",
+        "kind": 5,
+        "importPath": "app.main",
+        "description": "app.main",
+        "peekOfCode": "AMOUNT_HISTOGRAM = Histogram(\n    \"transaction_amount_distribution\",\n    \"Distribution des montants des transactions (Drift Detection)\",\n    buckets=[10, 50, 100, 500, 1000, 5000, 10000]\n)\nPROBABILITY_HISTOGRAM = Histogram(\n    \"fraud_probability_distribution\",\n    \"Distribution des probabilités de fraude prédites\",\n    buckets=[0.1, 0.3, 0.5, 0.7, 0.9]\n)",
+        "detail": "app.main",
+        "documentation": {}
+    },
+    {
+        "label": "PROBABILITY_HISTOGRAM",
+        "kind": 5,
+        "importPath": "app.main",
+        "description": "app.main",
+        "peekOfCode": "PROBABILITY_HISTOGRAM = Histogram(\n    \"fraud_probability_distribution\",\n    \"Distribution des probabilités de fraude prédites\",\n    buckets=[0.1, 0.3, 0.5, 0.7, 0.9]\n)\n# --- 2. Configuration & Chargement Modèle ---\nBASE_DIR = Path(__file__).resolve().parent.parent\nMODEL_PATH = BASE_DIR / \"model\" / \"model_UnderS.pkl\"\nmodel = None\nscaler = None",
+        "detail": "app.main",
+        "documentation": {}
+    },
+    {
+        "label": "BASE_DIR",
+        "kind": 5,
+        "importPath": "app.main",
+        "description": "app.main",
+        "peekOfCode": "BASE_DIR = Path(__file__).resolve().parent.parent\nMODEL_PATH = BASE_DIR / \"model\" / \"model_UnderS.pkl\"\nmodel = None\nscaler = None\nif MODEL_PATH.exists():\n    try:\n        model = joblib.load(MODEL_PATH)\n        # Initialize scaler (will be fitted on first batch or loaded if saved)\n        scaler = RobustScaler()\n        print(f\"✅ Modèle chargé : {MODEL_PATH}\")",
+        "detail": "app.main",
+        "documentation": {}
+    },
+    {
+        "label": "MODEL_PATH",
+        "kind": 5,
+        "importPath": "app.main",
+        "description": "app.main",
+        "peekOfCode": "MODEL_PATH = BASE_DIR / \"model\" / \"model_UnderS.pkl\"\nmodel = None\nscaler = None\nif MODEL_PATH.exists():\n    try:\n        model = joblib.load(MODEL_PATH)\n        # Initialize scaler (will be fitted on first batch or loaded if saved)\n        scaler = RobustScaler()\n        print(f\"✅ Modèle chargé : {MODEL_PATH}\")\n    except Exception as e:",
+        "detail": "app.main",
+        "documentation": {}
+    },
+    {
+        "label": "model",
+        "kind": 5,
+        "importPath": "app.main",
+        "description": "app.main",
+        "peekOfCode": "model = None\nscaler = None\nif MODEL_PATH.exists():\n    try:\n        model = joblib.load(MODEL_PATH)\n        # Initialize scaler (will be fitted on first batch or loaded if saved)\n        scaler = RobustScaler()\n        print(f\"✅ Modèle chargé : {MODEL_PATH}\")\n    except Exception as e:\n        print(f\"❌ Erreur modèle : {e}\")",
+        "detail": "app.main",
+        "documentation": {}
+    },
+    {
+        "label": "scaler",
+        "kind": 5,
+        "importPath": "app.main",
+        "description": "app.main",
+        "peekOfCode": "scaler = None\nif MODEL_PATH.exists():\n    try:\n        model = joblib.load(MODEL_PATH)\n        # Initialize scaler (will be fitted on first batch or loaded if saved)\n        scaler = RobustScaler()\n        print(f\"✅ Modèle chargé : {MODEL_PATH}\")\n    except Exception as e:\n        print(f\"❌ Erreur modèle : {e}\")\nelse:",
+        "detail": "app.main",
+        "documentation": {}
+    },
+    {
+        "label": "app",
+        "kind": 5,
+        "importPath": "app.main",
+        "description": "app.main",
+        "peekOfCode": "app = FastAPI(title=\"Fraud Detection API\", version=\"2.0.0 (UnderSampling Model)\")\n# --- 3. Activation du Monitoring ---\nInstrumentator().instrument(app).expose(app)\n# --- 4. Schéma de Données ---\nclass Transaction(BaseModel):\n    Time: float\n    Amount: float\n    V1: float\n    V2: float\n    V3: float",
+        "detail": "app.main",
+        "documentation": {}
+    },
+    {
+        "label": "url",
+        "kind": 5,
+        "importPath": "test_attack",
+        "description": "test_attack",
+        "peekOfCode": "url = \"http://localhost:8000/predict\"\nprint(\"--- SCÉNARIO 2 : ATTAQUE DE FRAUDE ---\")\nprint(\"⚠️ Envoi massif de transactions frauduleuses...\")\nprint(\"Regarde ton graphique 'Fraud Detection' grimper !\")\nprint(\"Appuie sur Ctrl+C pour arrêter.\\n\")\n# Template d'une FRAUDE (V14, V12, V10 très négatifs)\nfraud_features = {f\"V{i}\": 0.0 for i in range(1, 29)}\nfraud_features[\"V14\"] = -8.5\nfraud_features[\"V12\"] = -7.0\nfraud_features[\"V10\"] = -5.0",
+        "detail": "test_attack",
+        "documentation": {}
+    },
+    {
+        "label": "fraud_features",
+        "kind": 5,
+        "importPath": "test_attack",
+        "description": "test_attack",
+        "peekOfCode": "fraud_features = {f\"V{i}\": 0.0 for i in range(1, 29)}\nfraud_features[\"V14\"] = -8.5\nfraud_features[\"V12\"] = -7.0\nfraud_features[\"V10\"] = -5.0\nfraud_features[\"V4\"] = 4.0\nwhile True:\n    # Les fraudeurs essaient souvent des petits montants ou des montants nuls\n    amount = random.uniform(0.0, 15.0)\n    data = fraud_features.copy()\n    data[\"Amount\"] = amount",
+        "detail": "test_attack",
+        "documentation": {}
+    },
+    {
+        "label": "fraud_features[\"V14\"]",
+        "kind": 5,
+        "importPath": "test_attack",
+        "description": "test_attack",
+        "peekOfCode": "fraud_features[\"V14\"] = -8.5\nfraud_features[\"V12\"] = -7.0\nfraud_features[\"V10\"] = -5.0\nfraud_features[\"V4\"] = 4.0\nwhile True:\n    # Les fraudeurs essaient souvent des petits montants ou des montants nuls\n    amount = random.uniform(0.0, 15.0)\n    data = fraud_features.copy()\n    data[\"Amount\"] = amount\n    # Variation légère pour ne pas envoyer exactement la même requête",
+        "detail": "test_attack",
+        "documentation": {}
+    },
+    {
+        "label": "fraud_features[\"V12\"]",
+        "kind": 5,
+        "importPath": "test_attack",
+        "description": "test_attack",
+        "peekOfCode": "fraud_features[\"V12\"] = -7.0\nfraud_features[\"V10\"] = -5.0\nfraud_features[\"V4\"] = 4.0\nwhile True:\n    # Les fraudeurs essaient souvent des petits montants ou des montants nuls\n    amount = random.uniform(0.0, 15.0)\n    data = fraud_features.copy()\n    data[\"Amount\"] = amount\n    # Variation légère pour ne pas envoyer exactement la même requête\n    data[\"V14\"] += random.uniform(-1.0, 1.0)",
+        "detail": "test_attack",
+        "documentation": {}
+    },
+    {
+        "label": "fraud_features[\"V10\"]",
+        "kind": 5,
+        "importPath": "test_attack",
+        "description": "test_attack",
+        "peekOfCode": "fraud_features[\"V10\"] = -5.0\nfraud_features[\"V4\"] = 4.0\nwhile True:\n    # Les fraudeurs essaient souvent des petits montants ou des montants nuls\n    amount = random.uniform(0.0, 15.0)\n    data = fraud_features.copy()\n    data[\"Amount\"] = amount\n    # Variation légère pour ne pas envoyer exactement la même requête\n    data[\"V14\"] += random.uniform(-1.0, 1.0)\n    try:",
+        "detail": "test_attack",
+        "documentation": {}
+    },
+    {
+        "label": "fraud_features[\"V4\"]",
+        "kind": 5,
+        "importPath": "test_attack",
+        "description": "test_attack",
+        "peekOfCode": "fraud_features[\"V4\"] = 4.0\nwhile True:\n    # Les fraudeurs essaient souvent des petits montants ou des montants nuls\n    amount = random.uniform(0.0, 15.0)\n    data = fraud_features.copy()\n    data[\"Amount\"] = amount\n    # Variation légère pour ne pas envoyer exactement la même requête\n    data[\"V14\"] += random.uniform(-1.0, 1.0)\n    try:\n        response = requests.post(url, json=data)",
+        "detail": "test_attack",
+        "documentation": {}
+    },
+    {
+        "label": "url",
+        "kind": 5,
+        "importPath": "test_drift",
+        "description": "test_drift",
+        "peekOfCode": "url = \"http://localhost:8000/predict\"\nprint(\"--- SCÉNARIO 3 : DATA DRIFT (Montants Anormaux) ---\")\nprint(\"Simulation d'un changement radical de distribution des données...\")\nprint(\"Regarde ton graphique 'Amount Distribution' ou 'Average Amount' !\")\nprint(\"Appuie sur Ctrl+C pour arrêter.\\n\")\n# Features V normales (Le comportement est clean)\nnormal_features = {f\"V{i}\": 0.1 for i in range(1, 29)}\nwhile True:\n    # DRIFT : Soudainement, les montants deviennent ÉNORMES\n    # (Ex: Bug sur le site web ou blanchiment d'argent)",
+        "detail": "test_drift",
+        "documentation": {}
+    },
+    {
+        "label": "normal_features",
+        "kind": 5,
+        "importPath": "test_drift",
+        "description": "test_drift",
+        "peekOfCode": "normal_features = {f\"V{i}\": 0.1 for i in range(1, 29)}\nwhile True:\n    # DRIFT : Soudainement, les montants deviennent ÉNORMES\n    # (Ex: Bug sur le site web ou blanchiment d'argent)\n    amount = random.uniform(1000.0, 100000.0)\n    data = normal_features.copy()\n    data[\"Amount\"] = amount\n    try:\n        response = requests.post(url, json=data)\n        res_json = response.json()",
+        "detail": "test_drift",
+        "documentation": {}
+    },
+    {
+        "label": "url",
+        "kind": 5,
+        "importPath": "test_normal",
+        "description": "test_normal",
+        "peekOfCode": "url = \"http://localhost:8000/predict\"\nprint(\"--- SCÉNARIO 1 : TRAFIC NORMAL ---\")\nprint(\"Simulation de clients standards qui font leurs courses...\")\nprint(\"Appuie sur Ctrl+C pour arrêter.\\n\")\n# Template d'une transaction normale (V proches de 0)\nbase_data = {f\"V{i}\": 0.1 for i in range(1, 29)}\nwhile True:\n    # Montant réaliste : entre 10€ et 100€\n    amount = random.uniform(10.0, 100.0)\n    # On ajoute un peu de bruit aléatoire aux V-features",
+        "detail": "test_normal",
+        "documentation": {}
+    },
+    {
+        "label": "base_data",
+        "kind": 5,
+        "importPath": "test_normal",
+        "description": "test_normal",
+        "peekOfCode": "base_data = {f\"V{i}\": 0.1 for i in range(1, 29)}\nwhile True:\n    # Montant réaliste : entre 10€ et 100€\n    amount = random.uniform(10.0, 100.0)\n    # On ajoute un peu de bruit aléatoire aux V-features\n    data = base_data.copy()\n    data[\"Amount\"] = amount\n    for k in data:\n        if k != \"Amount\":\n            data[k] += random.uniform(-0.5, 0.5)",
+        "detail": "test_normal",
+        "documentation": {}
+    }
+]

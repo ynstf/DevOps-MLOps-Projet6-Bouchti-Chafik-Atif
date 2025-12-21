@@ -1,153 +1,173 @@
 import uvicorn
 import pandas as pd
 import joblib
-import time
+import numpy as np
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from pathlib import Path
 from prometheus_fastapi_instrumentator import Instrumentator
 from prometheus_client import Counter, Histogram
+from sklearn.preprocessing import RobustScaler
 
-# ==============================================================================
-# 1. DÉFINITION DES 5 MÉTRIQUES (LES MOUCHARDS INTELLIGENTS)
-# ==============================================================================
-
-# MÉTRIQUE 1 : Ratio Fraude/Safe (Labelisé)
-# Permet de faire des camemberts : 99% Safe vs 1% Fraude
-PREDICTION_COUNTER = Counter(
-    "fraud_prediction_total",
-    "Nombre de prédictions par type",
-    ["status"]  # Label: 'fraud' ou 'safe'
+# --- 1. Définition des Métriques Prometheus ---
+FRAUD_COUNTER = Counter(
+    "fraud_detection_total",
+    "Nombre total de fraudes détectées par le modèle"
 )
 
-# MÉTRIQUE 2 : Business Value (Compteur cumulatif)
-# "Combien d'argent a transité par notre API ?"
-PROCESSED_AMOUNT_COUNTER = Counter(
-    "processed_amount_total",
-    "Somme totale des montants traités "
-)
-
-# MÉTRIQUE 3 : Drift des Données (Montant)
-# "Est-ce que les montants sont normaux ou bizarres ?"
-# sum(rate(transaction_amount_dist_bucket[5m])) by (le)
 AMOUNT_HISTOGRAM = Histogram(
-    "transaction_amount_dist",
-    "Distribution des montants (Détection de Drift)",
-    buckets=[10, 100, 500, 1000, 5000, 10000, 50000]
+    "transaction_amount_distribution",
+    "Distribution des montants des transactions (Drift Detection)",
+    buckets=[10, 50, 100, 500, 1000, 5000, 10000]
 )
 
+PROBABILITY_HISTOGRAM = Histogram(
+    "fraud_probability_distribution",
+    "Distribution des probabilités de fraude prédites",
+    buckets=[0.1, 0.3, 0.5, 0.7, 0.9]
+)
 
-# ==============================================================================
-# 2. CONFIGURATION ET CHARGEMENT
-# ==============================================================================
+# --- 2. Configuration & Chargement Modèle ---
 BASE_DIR = Path(__file__).resolve().parent.parent
-MODEL_PATH = BASE_DIR / "model" / "pipeline_model_test.pkl"
+MODEL_PATH = BASE_DIR / "model" / "model_UnderS.pkl"
 
-model_pipeline = None
+model = None
+scaler = None
+
 if MODEL_PATH.exists():
     try:
-        model_pipeline = joblib.load(MODEL_PATH)
+        model = joblib.load(MODEL_PATH)
+        # Initialize scaler (will be fitted on first batch or loaded if saved)
+        scaler = RobustScaler()
         print(f"✅ Modèle chargé : {MODEL_PATH}")
     except Exception as e:
-        print(f"❌ Erreur chargement modèle : {e}")
+        print(f"❌ Erreur modèle : {e}")
 else:
     print(f"⚠️ Modèle introuvable : {MODEL_PATH}")
 
-app = FastAPI(title="Fraud Detection API", version="2.0.0 Pro Metrics")
+app = FastAPI(title="Fraud Detection API", version="2.0.0 (UnderSampling Model)")
 
-# Active /metrics pour Prometheus
+# --- 3. Activation du Monitoring ---
 Instrumentator().instrument(app).expose(app)
 
-# Colonnes attendues par le modèle
-EXPECTED_COLUMNS = ['Amount'] + [f'V{i}' for i in range(1, 29)]
-
-
+# --- 4. Schéma de Données ---
 class Transaction(BaseModel):
+    Time: float
     Amount: float
-    # Définition compacte des V1..V28
-    V1: float;
-    V2: float;
-    V3: float;
-    V4: float;
+    V1: float
+    V2: float
+    V3: float
+    V4: float
     V5: float
-    V6: float;
-    V7: float;
-    V8: float;
-    V9: float;
+    V6: float
+    V7: float
+    V8: float
+    V9: float
     V10: float
-    V11: float;
-    V12: float;
-    V13: float;
-    V14: float;
+    V11: float
+    V12: float
+    V13: float
+    V14: float
     V15: float
-    V16: float;
-    V17: float;
-    V18: float;
-    V19: float;
+    V16: float
+    V17: float
+    V18: float
+    V19: float
     V20: float
-    V21: float;
-    V22: float;
-    V23: float;
-    V24: float;
+    V21: float
+    V22: float
+    V23: float
+    V24: float
     V25: float
-    V26: float;
-    V27: float;
+    V26: float
+    V27: float
     V28: float
+
+
+def preprocess_transaction(transaction_dict: dict) -> pd.DataFrame:
+    """
+    Applique le même preprocessing que dans le notebook:
+    1. Scale Amount et Time avec RobustScaler
+    2. Renomme en scaled_amount et scaled_time
+    3. Drop les colonnes originales
+    4. Réorganise les colonnes (scaled en premier)
+    """
+    # Créer le DataFrame
+    df = pd.DataFrame([transaction_dict])
+    
+    # Sauvegarder les colonnes V1-V28
+    v_columns = [col for col in df.columns if col.startswith('V')]
+    
+    # Scale Amount et Time
+    scaled_amount = scaler.fit_transform(df[['Amount']].values.reshape(-1, 1))
+    scaled_time = scaler.fit_transform(df[['Time']].values.reshape(-1, 1))
+    
+    # Ajouter les colonnes scaled
+    df['scaled_amount'] = scaled_amount.flatten()
+    df['scaled_time'] = scaled_time.flatten()
+    
+    # Supprimer Time et Amount
+    df = df.drop(['Time', 'Amount'], axis=1)
+    
+    # Réorganiser: scaled_amount, scaled_time, puis V1-V28
+    final_columns = ['scaled_amount', 'scaled_time'] + v_columns
+    df = df[final_columns]
+    
+    return df
 
 
 @app.get("/")
 def health_check():
-    return {"status": "ok", "metrics": "active"}
+    return {
+        "status": "ok",
+        "model": "UnderSampling LogisticRegression",
+        "monitoring": "enabled"
+    }
 
 
 @app.post("/predict")
 def predict(transaction: Transaction):
-    if not model_pipeline:
-        raise HTTPException(status_code=503, detail="Service indisponible (Modèle manquant)")
-
-    # Début du chronomètre (Pour la métrique 5)
-    start_time = time.time()
+    if not model:
+        raise HTTPException(status_code=503, detail="Modèle non chargé")
 
     try:
-        # 1. Préparation Data
-        input_data = transaction.model_dump()
-        input_df = pd.DataFrame([input_data])
-        # Réorganisation des colonnes pour correspondre au training
-        input_df = input_df[EXPECTED_COLUMNS]
+        # Preprocessing identique au notebook
+        input_df = preprocess_transaction(transaction.model_dump())
 
-        # 2. Prédiction
-        prediction = model_pipeline.predict(input_df)[0]
-        proba = model_pipeline.predict_proba(input_df)[0][1]
+        # Prédiction
+        prediction = model.predict(input_df)[0]
+        proba = model.predict_proba(input_df)[0][1]
         is_fraud = bool(prediction)
 
-        # 3. Fin du chronomètre
-        process_time = time.time() - start_time
-
-        # ==========================================================
-        # 🚨 MISE À JOUR DES MÉTRIQUES (Le Coeur du Monitoring)
-        # ==========================================================
-
-        # Métrique 1 : Compteur Fraud vs Safe
-        status_label = "fraud" if is_fraud else "safe"
-        PREDICTION_COUNTER.labels(status=status_label).inc()
-
-        # Métrique 2 : Argent traité (On ajoute le montant au compteur total)
-        PROCESSED_AMOUNT_COUNTER.inc(transaction.Amount)
-
-        # Métrique 3 : Distribution des montants (Pour voir le Drift)
+        # --- MISE À JOUR DES MÉTRIQUES ---
         AMOUNT_HISTOGRAM.observe(transaction.Amount)
-
-
-        # ==========================================================
+        PROBABILITY_HISTOGRAM.observe(proba)
+        
+        if is_fraud:
+            FRAUD_COUNTER.inc()
 
         return {
             "is_fraud": is_fraud,
             "probability": round(float(proba), 4),
-            "process_time": round(process_time, 4)
+            "risk_level": "CRITICAL" if proba > 0.8 else ("HIGH" if proba > 0.5 else "LOW"),
+            "model_version": "UnderSampling"
         }
 
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.get("/model-info")
+def model_info():
+    """Endpoint pour vérifier les informations du modèle"""
+    if not model:
+        raise HTTPException(status_code=503, detail="Modèle non chargé")
+    
+    return {
+        "model_type": str(type(model).__name__),
+        "features_expected": 30,  # scaled_amount, scaled_time + V1-V28
+        "preprocessing": "RobustScaler on Amount & Time"
+    }
 
 
 if __name__ == "__main__":
