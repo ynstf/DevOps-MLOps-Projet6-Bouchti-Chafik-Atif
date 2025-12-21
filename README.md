@@ -1,4 +1,3 @@
-Voici un fichier README structuré basé sur le rapport fourni :
 
 # 🏦 Projet MLOps : Détection de Fraude Bancaire en Temps Réel
 
@@ -107,7 +106,7 @@ fraud-detection-mlops/
 ```
 
 ## 👥 Auteurs
-Projet développé dans le cadre d'une étude MLOps avancée sur la détection de fraude bancaire.
+Projet développé par Bouchti, Chafik, Atif dans le cadre d'une étude MLOps avancée sur la détection de fraude bancaire.
 
 ## 📄 Licence
 Ce projet est à des fins éducatives et démonstratives.
