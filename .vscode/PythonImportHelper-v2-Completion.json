@@ -27,12 +27,12 @@
         "documentation": {}
     },
     {
-        "label": "numpy",
+        "label": "time",
         "kind": 6,
         "isExtraImport": true,
-        "importPath": "numpy",
-        "description": "numpy",
-        "detail": "numpy",
+        "importPath": "time",
+        "description": "time",
+        "detail": "time",
         "documentation": {}
     },
     {
@@ -52,6 +52,46 @@
         "documentation": {}
     },
     {
+        "label": "FastAPI",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "HTTPException",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "UploadFile",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "File",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "BaseModel",
+        "importPath": "pydantic",
+        "description": "pydantic",
+        "isExtraImport": true,
+        "detail": "pydantic",
+        "documentation": {}
+    },
+    {
         "label": "BaseModel",
         "importPath": "pydantic",
         "description": "pydantic",
@@ -65,6 +105,22 @@
         "description": "pathlib",
         "isExtraImport": true,
         "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "Instrumentator",
+        "importPath": "prometheus_fastapi_instrumentator",
+        "description": "prometheus_fastapi_instrumentator",
+        "isExtraImport": true,
+        "detail": "prometheus_fastapi_instrumentator",
         "documentation": {}
     },
     {
@@ -92,6 +148,55 @@
         "documentation": {}
     },
     {
+        "label": "Counter",
+        "importPath": "prometheus_client",
+        "description": "prometheus_client",
+        "isExtraImport": true,
+        "detail": "prometheus_client",
+        "documentation": {}
+    },
+    {
+        "label": "Histogram",
+        "importPath": "prometheus_client",
+        "description": "prometheus_client",
+        "isExtraImport": true,
+        "detail": "prometheus_client",
+        "documentation": {}
+    },
+    {
+        "label": "numpy",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "numpy",
+        "description": "numpy",
+        "detail": "numpy",
+        "documentation": {}
+    },
+    {
+        "label": "HTMLResponse",
+        "importPath": "fastapi.responses",
+        "description": "fastapi.responses",
+        "isExtraImport": true,
+        "detail": "fastapi.responses",
+        "documentation": {}
+    },
+    {
+        "label": "StaticFiles",
+        "importPath": "fastapi.staticfiles",
+        "description": "fastapi.staticfiles",
+        "isExtraImport": true,
+        "detail": "fastapi.staticfiles",
+        "documentation": {}
+    },
+    {
+        "label": "CORSMiddleware",
+        "importPath": "fastapi.middleware.cors",
+        "description": "fastapi.middleware.cors",
+        "isExtraImport": true,
+        "detail": "fastapi.middleware.cors",
+        "documentation": {}
+    },
+    {
         "label": "RobustScaler",
         "importPath": "sklearn.preprocessing",
         "description": "sklearn.preprocessing",
@@ -109,15 +214,6 @@
         "documentation": {}
     },
     {
-        "label": "time",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "time",
-        "description": "time",
-        "detail": "time",
-        "documentation": {}
-    },
-    {
         "label": "random",
         "kind": 6,
         "isExtraImport": true,
@@ -131,16 +227,7 @@
         "kind": 6,
         "importPath": "app.main",
         "description": "app.main",
-        "peekOfCode": "class Transaction(BaseModel):\n    Time: float\n    Amount: float\n    V1: float\n    V2: float\n    V3: float\n    V4: float\n    V5: float\n    V6: float\n    V7: float",
-        "detail": "app.main",
-        "documentation": {}
-    },
-    {
-        "label": "preprocess_transaction",
-        "kind": 2,
-        "importPath": "app.main",
-        "description": "app.main",
-        "peekOfCode": "def preprocess_transaction(transaction_dict: dict) -> pd.DataFrame:\n    \"\"\"\n    Applique le même preprocessing que dans le notebook:\n    1. Scale Amount et Time avec RobustScaler\n    2. Renomme en scaled_amount et scaled_time\n    3. Drop les colonnes originales\n    4. Réorganise les colonnes (scaled en premier)\n    \"\"\"\n    # Créer le DataFrame\n    df = pd.DataFrame([transaction_dict])",
+        "peekOfCode": "class Transaction(BaseModel):\n    Amount: float\n    # Définition compacte des V1..V28\n    V1: float;\n    V2: float;\n    V3: float;\n    V4: float;\n    V5: float\n    V6: float;\n    V7: float;",
         "detail": "app.main",
         "documentation": {}
     },
@@ -149,7 +236,7 @@
         "kind": 2,
         "importPath": "app.main",
         "description": "app.main",
-        "peekOfCode": "def health_check():\n    return {\n        \"status\": \"ok\",\n        \"model\": \"UnderSampling LogisticRegression\",\n        \"monitoring\": \"enabled\"\n    }\n@app.post(\"/predict\")\ndef predict(transaction: Transaction):\n    if not model:\n        raise HTTPException(status_code=503, detail=\"Modèle non chargé\")",
+        "peekOfCode": "def health_check():\n    return {\"status\": \"ok\", \"metrics\": \"active\"}\n@app.post(\"/predict\")\ndef predict(transaction: Transaction):\n    if not model_pipeline:\n        raise HTTPException(status_code=503, detail=\"Service indisponible (Modèle manquant)\")\n    # Début du chronomètre (Pour la métrique 5)\n    start_time = time.time()\n    try:\n        # 1. Préparation Data",
         "detail": "app.main",
         "documentation": {}
     },
@@ -158,25 +245,25 @@
         "kind": 2,
         "importPath": "app.main",
         "description": "app.main",
-        "peekOfCode": "def predict(transaction: Transaction):\n    if not model:\n        raise HTTPException(status_code=503, detail=\"Modèle non chargé\")\n    try:\n        # Preprocessing identique au notebook\n        input_df = preprocess_transaction(transaction.model_dump())\n        # Prédiction\n        prediction = model.predict(input_df)[0]\n        proba = model.predict_proba(input_df)[0][1]\n        is_fraud = bool(prediction)",
+        "peekOfCode": "def predict(transaction: Transaction):\n    if not model_pipeline:\n        raise HTTPException(status_code=503, detail=\"Service indisponible (Modèle manquant)\")\n    # Début du chronomètre (Pour la métrique 5)\n    start_time = time.time()\n    try:\n        # 1. Préparation Data\n        input_data = transaction.model_dump()\n        input_df = pd.DataFrame([input_data])\n        # Réorganisation des colonnes pour correspondre au training",
         "detail": "app.main",
         "documentation": {}
     },
     {
-        "label": "model_info",
-        "kind": 2,
-        "importPath": "app.main",
-        "description": "app.main",
-        "peekOfCode": "def model_info():\n    \"\"\"Endpoint pour vérifier les informations du modèle\"\"\"\n    if not model:\n        raise HTTPException(status_code=503, detail=\"Modèle non chargé\")\n    return {\n        \"model_type\": str(type(model).__name__),\n        \"features_expected\": 30,  # scaled_amount, scaled_time + V1-V28\n        \"preprocessing\": \"RobustScaler on Amount & Time\"\n    }\nif __name__ == \"__main__\":",
-        "detail": "app.main",
-        "documentation": {}
-    },
-    {
-        "label": "FRAUD_COUNTER",
+        "label": "PREDICTION_COUNTER",
         "kind": 5,
         "importPath": "app.main",
         "description": "app.main",
-        "peekOfCode": "FRAUD_COUNTER = Counter(\n    \"fraud_detection_total\",\n    \"Nombre total de fraudes détectées par le modèle\"\n)\nAMOUNT_HISTOGRAM = Histogram(\n    \"transaction_amount_distribution\",\n    \"Distribution des montants des transactions (Drift Detection)\",\n    buckets=[10, 50, 100, 500, 1000, 5000, 10000]\n)\nPROBABILITY_HISTOGRAM = Histogram(",
+        "peekOfCode": "PREDICTION_COUNTER = Counter(\n    \"fraud_prediction_total\",\n    \"Nombre de prédictions par type\",\n    [\"status\"]  # Label: 'fraud' ou 'safe'\n)\n# MÉTRIQUE 2 : Business Value (Compteur cumulatif)\n# \"Combien d'argent a transité par notre API ?\"\nPROCESSED_AMOUNT_COUNTER = Counter(\n    \"processed_amount_total\",\n    \"Somme totale des montants traités \"",
+        "detail": "app.main",
+        "documentation": {}
+    },
+    {
+        "label": "PROCESSED_AMOUNT_COUNTER",
+        "kind": 5,
+        "importPath": "app.main",
+        "description": "app.main",
+        "peekOfCode": "PROCESSED_AMOUNT_COUNTER = Counter(\n    \"processed_amount_total\",\n    \"Somme totale des montants traités \"\n)\n# MÉTRIQUE 3 : Drift des Données (Montant)\n# \"Est-ce que les montants sont normaux ou bizarres ?\"\n# sum(rate(transaction_amount_dist_bucket[5m])) by (le)\nAMOUNT_HISTOGRAM = Histogram(\n    \"transaction_amount_dist\",\n    \"Distribution des montants (Détection de Drift)\",",
         "detail": "app.main",
         "documentation": {}
     },
@@ -185,16 +272,7 @@
         "kind": 5,
         "importPath": "app.main",
         "description": "app.main",
-        "peekOfCode": "AMOUNT_HISTOGRAM = Histogram(\n    \"transaction_amount_distribution\",\n    \"Distribution des montants des transactions (Drift Detection)\",\n    buckets=[10, 50, 100, 500, 1000, 5000, 10000]\n)\nPROBABILITY_HISTOGRAM = Histogram(\n    \"fraud_probability_distribution\",\n    \"Distribution des probabilités de fraude prédites\",\n    buckets=[0.1, 0.3, 0.5, 0.7, 0.9]\n)",
-        "detail": "app.main",
-        "documentation": {}
-    },
-    {
-        "label": "PROBABILITY_HISTOGRAM",
-        "kind": 5,
-        "importPath": "app.main",
-        "description": "app.main",
-        "peekOfCode": "PROBABILITY_HISTOGRAM = Histogram(\n    \"fraud_probability_distribution\",\n    \"Distribution des probabilités de fraude prédites\",\n    buckets=[0.1, 0.3, 0.5, 0.7, 0.9]\n)\n# --- 2. Configuration & Chargement Modèle ---\nBASE_DIR = Path(__file__).resolve().parent.parent\nMODEL_PATH = BASE_DIR / \"model\" / \"model_UnderS.pkl\"\nmodel = None\nscaler = None",
+        "peekOfCode": "AMOUNT_HISTOGRAM = Histogram(\n    \"transaction_amount_dist\",\n    \"Distribution des montants (Détection de Drift)\",\n    buckets=[10, 100, 500, 1000, 5000, 10000, 50000]\n)\n# ==============================================================================\n# 2. CONFIGURATION ET CHARGEMENT\n# ==============================================================================\nBASE_DIR = Path(__file__).resolve().parent.parent\nMODEL_PATH = BASE_DIR / \"model\" / \"pipeline_model_test.pkl\"",
         "detail": "app.main",
         "documentation": {}
     },
@@ -203,7 +281,7 @@
         "kind": 5,
         "importPath": "app.main",
         "description": "app.main",
-        "peekOfCode": "BASE_DIR = Path(__file__).resolve().parent.parent\nMODEL_PATH = BASE_DIR / \"model\" / \"model_UnderS.pkl\"\nmodel = None\nscaler = None\nif MODEL_PATH.exists():\n    try:\n        model = joblib.load(MODEL_PATH)\n        # Initialize scaler (will be fitted on first batch or loaded if saved)\n        scaler = RobustScaler()\n        print(f\"✅ Modèle chargé : {MODEL_PATH}\")",
+        "peekOfCode": "BASE_DIR = Path(__file__).resolve().parent.parent\nMODEL_PATH = BASE_DIR / \"model\" / \"pipeline_model_test.pkl\"\nmodel_pipeline = None\nif MODEL_PATH.exists():\n    try:\n        model_pipeline = joblib.load(MODEL_PATH)\n        print(f\"✅ Modèle chargé : {MODEL_PATH}\")\n    except Exception as e:\n        print(f\"❌ Erreur chargement modèle : {e}\")\nelse:",
         "detail": "app.main",
         "documentation": {}
     },
@@ -212,25 +290,16 @@
         "kind": 5,
         "importPath": "app.main",
         "description": "app.main",
-        "peekOfCode": "MODEL_PATH = BASE_DIR / \"model\" / \"model_UnderS.pkl\"\nmodel = None\nscaler = None\nif MODEL_PATH.exists():\n    try:\n        model = joblib.load(MODEL_PATH)\n        # Initialize scaler (will be fitted on first batch or loaded if saved)\n        scaler = RobustScaler()\n        print(f\"✅ Modèle chargé : {MODEL_PATH}\")\n    except Exception as e:",
+        "peekOfCode": "MODEL_PATH = BASE_DIR / \"model\" / \"pipeline_model_test.pkl\"\nmodel_pipeline = None\nif MODEL_PATH.exists():\n    try:\n        model_pipeline = joblib.load(MODEL_PATH)\n        print(f\"✅ Modèle chargé : {MODEL_PATH}\")\n    except Exception as e:\n        print(f\"❌ Erreur chargement modèle : {e}\")\nelse:\n    print(f\"⚠️ Modèle introuvable : {MODEL_PATH}\")",
         "detail": "app.main",
         "documentation": {}
     },
     {
-        "label": "model",
+        "label": "model_pipeline",
         "kind": 5,
         "importPath": "app.main",
         "description": "app.main",
-        "peekOfCode": "model = None\nscaler = None\nif MODEL_PATH.exists():\n    try:\n        model = joblib.load(MODEL_PATH)\n        # Initialize scaler (will be fitted on first batch or loaded if saved)\n        scaler = RobustScaler()\n        print(f\"✅ Modèle chargé : {MODEL_PATH}\")\n    except Exception as e:\n        print(f\"❌ Erreur modèle : {e}\")",
-        "detail": "app.main",
-        "documentation": {}
-    },
-    {
-        "label": "scaler",
-        "kind": 5,
-        "importPath": "app.main",
-        "description": "app.main",
-        "peekOfCode": "scaler = None\nif MODEL_PATH.exists():\n    try:\n        model = joblib.load(MODEL_PATH)\n        # Initialize scaler (will be fitted on first batch or loaded if saved)\n        scaler = RobustScaler()\n        print(f\"✅ Modèle chargé : {MODEL_PATH}\")\n    except Exception as e:\n        print(f\"❌ Erreur modèle : {e}\")\nelse:",
+        "peekOfCode": "model_pipeline = None\nif MODEL_PATH.exists():\n    try:\n        model_pipeline = joblib.load(MODEL_PATH)\n        print(f\"✅ Modèle chargé : {MODEL_PATH}\")\n    except Exception as e:\n        print(f\"❌ Erreur chargement modèle : {e}\")\nelse:\n    print(f\"⚠️ Modèle introuvable : {MODEL_PATH}\")\napp = FastAPI(title=\"Fraud Detection API\", version=\"2.0.0 Pro Metrics\")",
         "detail": "app.main",
         "documentation": {}
     },
@@ -239,8 +308,134 @@
         "kind": 5,
         "importPath": "app.main",
         "description": "app.main",
-        "peekOfCode": "app = FastAPI(title=\"Fraud Detection API\", version=\"2.0.0 (UnderSampling Model)\")\n# --- 3. Activation du Monitoring ---\nInstrumentator().instrument(app).expose(app)\n# --- 4. Schéma de Données ---\nclass Transaction(BaseModel):\n    Time: float\n    Amount: float\n    V1: float\n    V2: float\n    V3: float",
+        "peekOfCode": "app = FastAPI(title=\"Fraud Detection API\", version=\"2.0.0 Pro Metrics\")\n# Active /metrics pour Prometheus\nInstrumentator().instrument(app).expose(app)\n# Colonnes attendues par le modèle\nEXPECTED_COLUMNS = ['Amount'] + [f'V{i}' for i in range(1, 29)]\nclass Transaction(BaseModel):\n    Amount: float\n    # Définition compacte des V1..V28\n    V1: float;\n    V2: float;",
         "detail": "app.main",
+        "documentation": {}
+    },
+    {
+        "label": "EXPECTED_COLUMNS",
+        "kind": 5,
+        "importPath": "app.main",
+        "description": "app.main",
+        "peekOfCode": "EXPECTED_COLUMNS = ['Amount'] + [f'V{i}' for i in range(1, 29)]\nclass Transaction(BaseModel):\n    Amount: float\n    # Définition compacte des V1..V28\n    V1: float;\n    V2: float;\n    V3: float;\n    V4: float;\n    V5: float\n    V6: float;",
+        "detail": "app.main",
+        "documentation": {}
+    },
+    {
+        "label": "Transaction",
+        "kind": 6,
+        "importPath": "UI.main",
+        "description": "UI.main",
+        "peekOfCode": "class Transaction(BaseModel):\n    Time: float\n    Amount: float\n    V1: float\n    V2: float\n    V3: float\n    V4: float\n    V5: float\n    V6: float\n    V7: float",
+        "detail": "UI.main",
+        "documentation": {}
+    },
+    {
+        "label": "preprocess_transaction",
+        "kind": 2,
+        "importPath": "UI.main",
+        "description": "UI.main",
+        "peekOfCode": "def preprocess_transaction(transaction_dict: dict) -> pd.DataFrame:\n    \"\"\"Preprocessing identique au notebook\"\"\"\n    df = pd.DataFrame([transaction_dict])\n    v_columns = [col for col in df.columns if col.startswith('V')]\n    scaled_amount = scaler.fit_transform(df[['Amount']].values.reshape(-1, 1))\n    scaled_time = scaler.fit_transform(df[['Time']].values.reshape(-1, 1))\n    df['scaled_amount'] = scaled_amount.flatten()\n    df['scaled_time'] = scaled_time.flatten()\n    df = df.drop(['Time', 'Amount'], axis=1)\n    final_columns = ['scaled_amount', 'scaled_time'] + v_columns",
+        "detail": "UI.main",
+        "documentation": {}
+    },
+    {
+        "label": "health_check",
+        "kind": 2,
+        "importPath": "UI.main",
+        "description": "UI.main",
+        "peekOfCode": "def health_check():\n    return {\n        \"status\": \"ok\",\n        \"model\": \"UnderSampling LogisticRegression\",\n        \"monitoring\": \"enabled\"\n    }\n@app.post(\"/predict\")\ndef predict(transaction: Transaction):\n    \"\"\"Prédiction pour une transaction unique\"\"\"\n    if not model:",
+        "detail": "UI.main",
+        "documentation": {}
+    },
+    {
+        "label": "predict",
+        "kind": 2,
+        "importPath": "UI.main",
+        "description": "UI.main",
+        "peekOfCode": "def predict(transaction: Transaction):\n    \"\"\"Prédiction pour une transaction unique\"\"\"\n    if not model:\n        raise HTTPException(status_code=503, detail=\"Modèle non chargé\")\n    try:\n        input_df = preprocess_transaction(transaction.model_dump())\n        prediction = model.predict(input_df)[0]\n        proba = model.predict_proba(input_df)[0][1]\n        is_fraud = bool(prediction)\n        AMOUNT_HISTOGRAM.observe(transaction.Amount)",
+        "detail": "UI.main",
+        "documentation": {}
+    },
+    {
+        "label": "FRAUD_COUNTER",
+        "kind": 5,
+        "importPath": "UI.main",
+        "description": "UI.main",
+        "peekOfCode": "FRAUD_COUNTER = Counter(\n    \"fraud_detection_total\",\n    \"Nombre total de fraudes détectées par le modèle\"\n)\nAMOUNT_HISTOGRAM = Histogram(\n    \"transaction_amount_distribution\",\n    \"Distribution des montants des transactions\",\n    buckets=[10, 50, 100, 500, 1000, 5000, 10000]\n)\nPROBABILITY_HISTOGRAM = Histogram(",
+        "detail": "UI.main",
+        "documentation": {}
+    },
+    {
+        "label": "AMOUNT_HISTOGRAM",
+        "kind": 5,
+        "importPath": "UI.main",
+        "description": "UI.main",
+        "peekOfCode": "AMOUNT_HISTOGRAM = Histogram(\n    \"transaction_amount_distribution\",\n    \"Distribution des montants des transactions\",\n    buckets=[10, 50, 100, 500, 1000, 5000, 10000]\n)\nPROBABILITY_HISTOGRAM = Histogram(\n    \"fraud_probability_distribution\",\n    \"Distribution des probabilités de fraude\",\n    buckets=[0.1, 0.3, 0.5, 0.7, 0.9]\n)",
+        "detail": "UI.main",
+        "documentation": {}
+    },
+    {
+        "label": "PROBABILITY_HISTOGRAM",
+        "kind": 5,
+        "importPath": "UI.main",
+        "description": "UI.main",
+        "peekOfCode": "PROBABILITY_HISTOGRAM = Histogram(\n    \"fraud_probability_distribution\",\n    \"Distribution des probabilités de fraude\",\n    buckets=[0.1, 0.3, 0.5, 0.7, 0.9]\n)\n# --- Configuration ---\n# BASE_DIR = Path(__file__).resolve().parent.parent\nBASE_DIR = Path(__file__).resolve().parent\nMODEL_PATH = BASE_DIR / \"model\" / \"model_UnderS.pkl\"\nTEMPLATE_PATH = BASE_DIR / \"templates\"",
+        "detail": "UI.main",
+        "documentation": {}
+    },
+    {
+        "label": "BASE_DIR",
+        "kind": 5,
+        "importPath": "UI.main",
+        "description": "UI.main",
+        "peekOfCode": "BASE_DIR = Path(__file__).resolve().parent\nMODEL_PATH = BASE_DIR / \"model\" / \"model_UnderS.pkl\"\nTEMPLATE_PATH = BASE_DIR / \"templates\"\nmodel = None\nscaler = None\nif MODEL_PATH.exists():\n    try:\n        model = joblib.load(MODEL_PATH)\n        scaler = RobustScaler()\n        print(f\"✅ Modèle chargé : {MODEL_PATH}\")",
+        "detail": "UI.main",
+        "documentation": {}
+    },
+    {
+        "label": "MODEL_PATH",
+        "kind": 5,
+        "importPath": "UI.main",
+        "description": "UI.main",
+        "peekOfCode": "MODEL_PATH = BASE_DIR / \"model\" / \"model_UnderS.pkl\"\nTEMPLATE_PATH = BASE_DIR / \"templates\"\nmodel = None\nscaler = None\nif MODEL_PATH.exists():\n    try:\n        model = joblib.load(MODEL_PATH)\n        scaler = RobustScaler()\n        print(f\"✅ Modèle chargé : {MODEL_PATH}\")\n    except Exception as e:",
+        "detail": "UI.main",
+        "documentation": {}
+    },
+    {
+        "label": "TEMPLATE_PATH",
+        "kind": 5,
+        "importPath": "UI.main",
+        "description": "UI.main",
+        "peekOfCode": "TEMPLATE_PATH = BASE_DIR / \"templates\"\nmodel = None\nscaler = None\nif MODEL_PATH.exists():\n    try:\n        model = joblib.load(MODEL_PATH)\n        scaler = RobustScaler()\n        print(f\"✅ Modèle chargé : {MODEL_PATH}\")\n    except Exception as e:\n        print(f\"❌ Erreur modèle : {e}\")",
+        "detail": "UI.main",
+        "documentation": {}
+    },
+    {
+        "label": "model",
+        "kind": 5,
+        "importPath": "UI.main",
+        "description": "UI.main",
+        "peekOfCode": "model = None\nscaler = None\nif MODEL_PATH.exists():\n    try:\n        model = joblib.load(MODEL_PATH)\n        scaler = RobustScaler()\n        print(f\"✅ Modèle chargé : {MODEL_PATH}\")\n    except Exception as e:\n        print(f\"❌ Erreur modèle : {e}\")\nelse:",
+        "detail": "UI.main",
+        "documentation": {}
+    },
+    {
+        "label": "scaler",
+        "kind": 5,
+        "importPath": "UI.main",
+        "description": "UI.main",
+        "peekOfCode": "scaler = None\nif MODEL_PATH.exists():\n    try:\n        model = joblib.load(MODEL_PATH)\n        scaler = RobustScaler()\n        print(f\"✅ Modèle chargé : {MODEL_PATH}\")\n    except Exception as e:\n        print(f\"❌ Erreur modèle : {e}\")\nelse:\n    print(f\"⚠️ Modèle introuvable : {MODEL_PATH}\")",
+        "detail": "UI.main",
+        "documentation": {}
+    },
+    {
+        "label": "app",
+        "kind": 5,
+        "importPath": "UI.main",
+        "description": "UI.main",
+        "peekOfCode": "app = FastAPI(title=\"Fraud Detection API\", version=\"2.0.0\")\n# CORS pour permettre les requêtes depuis le navigateur\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=[\"*\"],\n    allow_credentials=True,\n    allow_methods=[\"*\"],\n    allow_headers=[\"*\"],\n)\n# Monitoring",
+        "detail": "UI.main",
         "documentation": {}
     },
     {

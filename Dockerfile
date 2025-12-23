@@ -16,7 +16,10 @@ COPY . .
 
 # 6. On expose le port 8000 (celui de FastAPI)
 EXPOSE 8000
+#EXPOSE 9000
 
 # 7. La commande de démarrage
 # On lance uvicorn sur l'host 0.0.0.0 (important pour Docker)
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+#CMD ["uvicorn", "UI.main:app", "--host", "0.0.0.0", "--port", "9000"]
